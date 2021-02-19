@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "aiven-kafka"
+version = "0.1.0"
+description = ""
+authors = ["feofanov <feofanov@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8.4"
+fastapi = "^0.63.0"
+pydantic = {extras = ["dotenv"], version = "^1.7.3"}
+kafka-python = "^2.0.2"
+msgpack = "^1.0.2"
+SQLAlchemy = "^1.3.23"
+databases = {extras = ["postgresql"], version = "^0.4.1"}
+psycopg2-binary = "^2.8.6"
+aiokafka = "^0.7.0"
+
+[tool.poetry.dev-dependencies]
+uvicorn = "^0.13.3"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
