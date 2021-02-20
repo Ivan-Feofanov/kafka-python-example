@@ -1,14 +1,12 @@
-import uuid
+from sqlalchemy import Column, String, Text
+from sqlalchemy.dialects.postgresql import UUID
 
-from pydantic import BaseModel
-
-
-class IncomingMessage(BaseModel):
-    title: str
-    text: str = None
+from db.main import Base
 
 
-class Message(BaseModel):
-    id: uuid.UUID
-    title: str
-    text: str = None
+class Message(Base):
+    __tablename__ = "messages"
+
+    id = Column(UUID, primary_key=True, index=True)
+    title = Column(String)
+    text = Column(Text)

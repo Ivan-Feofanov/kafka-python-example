@@ -1,23 +1,18 @@
-import databases
 import sqlalchemy
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
 from config import get_settings
 
 settings = get_settings()
 
-database = databases.Database(settings.postgres_dsn, min_size=2, max_size=5)
+if settings.environment == 'test':
+    database_url = settings.test_db_dsn
+else:
+    database_url = settings.postgres_dsn
 
-metadata = sqlalchemy.MetaData()
+engine = sqlalchemy.create_engine(database_url)
 
-messages = sqlalchemy.Table(
-    "messages",
-    metadata,
-    sqlalchemy.Column("id", UUID, primary_key=True),
-    sqlalchemy.Column("title", sqlalchemy.String),
-    sqlalchemy.Column("text", sqlalchemy.Text),
-)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-engine = sqlalchemy.create_engine(settings.postgres_dsn)
-
-metadata.create_all(engine)
+Base = declarative_base()

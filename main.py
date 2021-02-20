@@ -1,12 +1,14 @@
 from typing import List
 
 import msgpack
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from kafka import KafkaProducer
+from sqlalchemy.orm import Session
 
 from config import get_settings
-from db.main import database, messages
-from db.models import Message, IncomingMessage
+from db import models
+from db.main import SessionLocal, engine
+from db.schemas import Message, IncomingMessage
 
 settings = get_settings()
 
@@ -17,24 +19,24 @@ producer = KafkaProducer(
 
 app = FastAPI()
 
-
-@app.on_event("startup")
-async def startup():
-    await database.connect()
+models.Base.metadata.create_all(bind=engine)
 
 
-@app.on_event("shutdown")
-async def shutdown():
-    await database.disconnect()
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 
-@app.post("/send")
+@app.post("/messages/")
 def send(message: IncomingMessage):
     producer.send(settings.kafka_topic, message.dict())
     return message
 
 
 @app.get("/messages/", response_model=List[Message])
-async def read_notes():
-    query = messages.select()
-    return await database.fetch_all(query)
+def read_notes(db: Session = Depends(get_db)):
+    return db.query(models.Message).all()
