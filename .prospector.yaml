@@ -5,3 +5,4 @@ pylint:
     - unused-argument
     - too-few-public-methods
     - too-many-arguments
+    - not-a-mapping

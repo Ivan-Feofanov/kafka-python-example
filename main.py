@@ -19,7 +19,7 @@ models.Base.metadata.create_all(bind=engine)
 
 
 # Dependencies
-@lru_cache
+# One session per request
 def get_db():
     session = SessionLocal()
     try:
@@ -28,16 +28,19 @@ def get_db():
         session.close()
 
 
+# One Kafka producer for all requests
 @lru_cache
 def get_kafka():
     producer = KafkaProducer(
         value_serializer=msgpack.packb,
         **settings.kafka
     )
-    try:
-        yield producer
-    finally:
-        producer.close()
+    return producer
+
+
+@app.on_event("shutdown")
+def shutdown_event(producer: KafkaProducer = Depends(get_kafka)):
+    producer.close()
 
 
 @app.post("/messages/")
