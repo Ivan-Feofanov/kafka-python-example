@@ -1,6 +1,7 @@
 on:
-  release:
-    types: [created]
+  push:
+    branches:
+      - master
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -12,10 +13,6 @@ jobs:
 
       - name: Push to dokku
         uses: dokku/github-action@master
-        env:
-          APP_NAME: kafka-python-example
-          HOST: ovz2.feofanov.mydem.vps.myjino.ru
-          PORT: 49279
         with:
-          git_remote_url: 'ssh://dokku@$HOST:$PORT/$APP_NAME'
+          git_remote_url: 'ssh://dokku@ovz2.feofanov.mydem.vps.myjino.ru:49279/kafka-python-example'
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
