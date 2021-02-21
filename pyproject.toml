@@ -5,14 +5,14 @@ description = ""
 authors = ["feofanov <feofanov@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "3.8.8"
+python = "^3.8.4"
+uvicorn = "^0.13.4"
 fastapi = "^0.63.0"
 pydantic = {extras = ["dotenv"], version = "^1.7.3"}
 kafka-python = "^2.0.2"
 msgpack = "^1.0.2"
 SQLAlchemy = "^1.3.23"
 psycopg2-binary = "^2.8.6"
-uvicorn = "^0.13.4"
 
 [tool.poetry.dev-dependencies]
 prospector = "^1.3.1"
