@@ -1,2 +1,2 @@
 # Kafka Python example
-![](https://github.com/Ivan-Feofanov/kafa-python-example/validate/lint-and-test/badge.svg)
+![](https://github.com/Ivan-Feofanov/kafka-python-example/workflows/validate/badge.svg)
