@@ -3,7 +3,10 @@ on: push
 
 jobs:
   runner-job:
-    runs-on: python:3.8
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ 3.8, 3.9 ]
 
     # Service containers to run with `runner-job`
     services:
@@ -24,9 +27,12 @@ jobs:
           - 5432:5432
 
     steps:
-      # Downloads a copy of the code in your repository before running CI tests
-      - name: Check out repository code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
         run: |
