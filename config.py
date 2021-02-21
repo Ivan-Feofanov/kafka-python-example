@@ -33,10 +33,11 @@ class Settings(BaseSettings):
         env_file = ".env"
 
     @validator('kafka_url', 'kafka_topic', 'kafka_consumer_group', pre=True)
-    def pass_in_test_env(cls, v, values, field):
-        if os.environ.get('ENVIRONMENT') != 'test' and v is None:
+    @classmethod
+    def pass_in_test_env(cls, value, values, field):
+        if os.environ.get('ENVIRONMENT') != 'test' and value is None:
             raise ValueError(f'Config var {field.name} is required')
-        return v
+        return value
 
 
 @lru_cache
