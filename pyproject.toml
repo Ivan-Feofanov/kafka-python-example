@@ -5,7 +5,7 @@ description = ""
 authors = ["feofanov <feofanov@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "3.8.1"
+python = "3.8.4"
 fastapi = "^0.63.0"
 pydantic = {extras = ["dotenv"], version = "^1.7.3"}
 kafka-python = "^2.0.2"
