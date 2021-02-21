@@ -28,7 +28,7 @@ def msgpack_deserializer(msg) -> Optional[Dict]:
 def consume(db: Session):
     consumer = KafkaConsumer(
         settings.kafka_topic,
-        group_id=f'{settings.kafka_consumer_group}-sync',
+        group_id=settings.kafka_consumer_group,
         value_deserializer=msgpack_deserializer,
         **settings.kafka
     )

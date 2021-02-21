@@ -1,4 +1,5 @@
 import os
+from enum import Enum
 from functools import lru_cache
 from typing import Dict
 
@@ -10,14 +11,19 @@ BASE_DIR_NAME = os.path.basename(BASE_DIR)
 SERVICE_NAME = os.environ.get('SERVICE_NAME', BASE_DIR_NAME)
 
 
+class AuthEnum(str, Enum):
+    off = 'off'
+    ssl = 'ssl'
+    basic = 'basic'
+
+
 class Settings(BaseSettings):
-    environment: str = 'development'
     root_dir: str = PROJECT_DIR
-    postgres_dsn: PostgresDsn
-    test_db_dsn: str = None
-    kafka_dsn: str
+    database_url: PostgresDsn
+    kafka_url: str
     kafka_topic: str
     kafka_consumer_group: str
+    kafka_auth: AuthEnum = None
     kafka_auth_ca: str = None
     kafka_auth_cert: str = None
     kafka_auth_pkey: str = None
@@ -31,11 +37,12 @@ class Settings(BaseSettings):
 def get_settings():
     settings = Settings()
 
-    settings.kafka = dict(bootstrap_servers=[settings.kafka_dsn])
+    settings.kafka = dict(bootstrap_servers=settings.kafka_url)
 
-    if all([settings.kafka_auth_ca,
-            settings.kafka_auth_cert,
-            settings.kafka_auth_pkey]):
+    # TODO: add password auth
+    if settings.kafka_auth == 'ssl' and all([settings.kafka_auth_ca,
+                                             settings.kafka_auth_cert,
+                                             settings.kafka_auth_pkey]):
         settings.kafka['security_protocol'] = 'SSL'
         settings.kafka['ssl_cafile'] = os.path.join(
             settings.root_dir, settings.kafka_auth_ca)

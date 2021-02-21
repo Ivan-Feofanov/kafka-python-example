@@ -13,7 +13,7 @@ class StubMessage:
 
 
 @mock.patch('main.producer.send')
-def test_api_with_stubbed_kafka(mock_1, session, client, faker):
+def test_api(mock_1, session, client, faker):
     user_data = {
         'title': faker.pystr(),
         'text': faker.pystr()
@@ -29,5 +29,6 @@ def test_api_with_stubbed_kafka(mock_1, session, client, faker):
     assert response.status_code == status.HTTP_200_OK
 
     data = response.json()
+    assert data[0]['id'] is not None
     assert data[0]['title'] == user_data['title']
     assert data[0]['text'] == user_data['text']
