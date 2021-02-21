@@ -14,18 +14,16 @@ from db.main import engine
 settings = get_settings()
 logger = logging.getLogger(__name__)
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-session = SessionLocal()
-
 
 def msgpack_deserializer(msg) -> Optional[Dict]:
     try:
         return msgpack.unpackb(msg)
     except (msgpack.UnpackException, msgpack.ExtraData) as exc:
-        logger.error(f'Unpack failed. Input: {str(msg)}', exc_info=exc)
+        err_msg = 'Unpack failed. Input: %s' % str(msg)
+        logger.error(err_msg, exc_info=exc)
 
 
-def consume(db: Session):
+def consume(session: Session):
     consumer = KafkaConsumer(
         settings.kafka_topic,
         group_id=settings.kafka_consumer_group,
@@ -40,11 +38,12 @@ def consume(db: Session):
                 title=msg.value['title'],
                 text=msg.value['text']
             )
-            db.add(db_msg)
-            db.commit()
+            session.add(db_msg)
+            session.commit()
         except SQLAlchemyError as exc:
             logger.error(msg=f'Error saving message {msg.value}', exc_info=exc)
 
 
 if __name__ == "__main__":
-    consume(db=session)
+    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    consume(session=SessionLocal())

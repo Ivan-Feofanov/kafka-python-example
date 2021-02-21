@@ -24,11 +24,11 @@ models.Base.metadata.create_all(bind=engine)
 
 # Dependency
 def get_db():
-    db = SessionLocal()
+    session = SessionLocal()
     try:
-        yield db
+        yield session
     finally:
-        db.close()
+        session.close()
 
 
 @app.post("/messages/")
@@ -38,5 +38,5 @@ def send(message: IncomingMessage):
 
 
 @app.get("/messages/", response_model=List[Message])
-def read_notes(db: Session = Depends(get_db)):
-    return db.query(models.Message).all()
+def read_notes(session: Session = Depends(get_db)):
+    return session.query(models.Message).all()

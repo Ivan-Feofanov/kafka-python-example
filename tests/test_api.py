@@ -23,7 +23,7 @@ def test_api(mock_1, session, client, faker):
 
     with mock.patch('receiver.KafkaConsumer',
                     return_value=[StubMessage(value=user_data)]):
-        consume(db=session)
+        consume(session=session)
 
     response = client.get("/messages/")
     assert response.status_code == status.HTTP_200_OK
