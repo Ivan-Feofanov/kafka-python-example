@@ -39,13 +39,7 @@ If you choose uvicorn, you can run development version
 ```shell
 uvicorn main:app --reload
 ```
-It will run web API that will gitting messages like this:
-```json
-{
-  "title": "Test title",
-  "text": "Test message test"
-}
-```
+It will run web API that will getting messages 
 and passing them in Kafka.
 
 #### Receiver
