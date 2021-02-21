@@ -3,7 +3,7 @@ from enum import Enum
 from functools import lru_cache
 from typing import Dict
 
-from pydantic import BaseSettings, PostgresDsn
+from pydantic import BaseSettings, PostgresDsn, validator
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
@@ -20,9 +20,9 @@ class AuthEnum(str, Enum):
 class Settings(BaseSettings):
     root_dir: str = PROJECT_DIR
     database_url: PostgresDsn
-    kafka_url: str
-    kafka_topic: str
-    kafka_consumer_group: str
+    kafka_url: str = None
+    kafka_topic: str = None
+    kafka_consumer_group: str = None
     kafka_auth: AuthEnum = None
     kafka_auth_ca: str = None
     kafka_auth_cert: str = None
@@ -31,6 +31,12 @@ class Settings(BaseSettings):
 
     class Config:
         env_file = ".env"
+
+    @validator('kafka_url', 'kafka_topic', 'kafka_consumer_group', pre=True)
+    def pass_in_test_env(cls, v, values, field):
+        if os.environ.get('ENVIRONMENT') != 'test' and v is None:
+            raise ValueError(f'Config var {field.name} is required')
+        return v
 
 
 @lru_cache

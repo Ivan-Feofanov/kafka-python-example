@@ -1,19 +1,12 @@
-from dataclasses import dataclass
-from typing import Dict
 from unittest import mock
 
 from starlette import status
 
 from receiver import consume
+from tests.conftest import StubMessage
 
 
-@dataclass
-class StubMessage:
-    value: Dict = None
-
-
-@mock.patch('main.producer.send')
-def test_api(mock_1, session, client, faker):
+def test_api(session, client, faker):
     user_data = {
         'title': faker.pystr(),
         'text': faker.pystr()

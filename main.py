@@ -1,3 +1,4 @@
+from functools import lru_cache
 from typing import List
 
 import msgpack
@@ -12,17 +13,13 @@ from db.schemas import Message, IncomingMessage
 
 settings = get_settings()
 
-producer = KafkaProducer(
-    value_serializer=msgpack.packb,
-    **settings.kafka
-)
-
 app = FastAPI()
 
 models.Base.metadata.create_all(bind=engine)
 
 
-# Dependency
+# Dependencies
+@lru_cache
 def get_db():
     session = SessionLocal()
     try:
@@ -31,10 +28,22 @@ def get_db():
         session.close()
 
 
+@lru_cache
+def get_kafka():
+    producer = KafkaProducer(
+        value_serializer=msgpack.packb,
+        **settings.kafka
+    )
+    try:
+        yield producer
+    finally:
+        producer.close()
+
+
 @app.post("/messages/")
-def send(message: IncomingMessage):
-    producer.send(settings.kafka_topic, message.dict())
-    return message
+def send(msg: IncomingMessage, producer: KafkaProducer = Depends(get_kafka)):
+    producer.send(settings.kafka_topic, msg.dict())
+    return msg
 
 
 @app.get("/messages/", response_model=List[Message])
