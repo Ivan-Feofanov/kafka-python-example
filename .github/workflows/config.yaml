@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ 3.8, 3.9 ]
+        python-version: [ 3.8 ]
 
     # Service containers to run with `runner-job`
     services:
@@ -44,6 +44,7 @@ jobs:
         run: poetry run prospector
 
       - name: Test
-        run: poetry run pytest
+        run: poetry run python -m pytest
         env:
+          ENVIRONMENT: test
           DATABASE_URL: postgresql://postgres:postgres@postgres:5432/test
