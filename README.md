@@ -57,7 +57,8 @@ on http://127.0.0.1:8000/docs or http://127.0.0.1:8000/redoc
 
 
 #### Tests and linter
-_Don't forget to set env variable `ENVIRONMENT` to `test`._
+_Don't forget to set env variable `ENVIRONMENT` to `test`
+and point your test database in `DATABASE_URL`._
 
 To run tests use
 ```shell
