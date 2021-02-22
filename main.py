@@ -79,4 +79,6 @@ def delete(message_id: UUID,
 
 @app.get("/messages/", response_model=List[Message])
 def read_notes(session: Session = Depends(get_db)):
-    return session.query(models.Message).all()
+    return session.query(models.Message)\
+        .order_by(models.Message.created_at.desc())\
+        .all()

@@ -1,4 +1,3 @@
-import uuid
 from datetime import datetime
 
 import factory.fuzzy
@@ -13,7 +12,7 @@ class MessageFactory(SQLAlchemyModelFactory):
         model = Message
         sqlalchemy_session = Session
 
-    id = str(uuid.uuid4())
+    id = factory.Faker('uuid4')
     title = factory.fuzzy.FuzzyText()
     text = factory.fuzzy.FuzzyText()
     created_at: datetime = None

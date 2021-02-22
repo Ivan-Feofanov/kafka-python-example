@@ -1,6 +1,7 @@
 from unittest import mock
 
 import pytest
+from freezegun import freeze_time
 from starlette import status
 
 from db.models import Message
@@ -84,3 +85,18 @@ def test_api_delete(db_session, client):
         consume(session=db_session)
 
     assert db_session.query(Message).get(msg.id) is None
+
+
+def test_api_ordering(client):
+    with freeze_time('2000-01-01'):
+        msg_old: MessageFactory = MessageFactory()
+    msg_new: MessageFactory = MessageFactory()
+
+    res = client.get('/messages/')
+    assert res.status_code == status.HTTP_200_OK
+
+    data = res.json()
+
+    assert data[0]['id'] == str(msg_new.id)
+    assert data[1]['id'] == str(msg_old.id)
+

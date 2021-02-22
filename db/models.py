@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Column, String, Text, DateTime, sql
+from sqlalchemy import Column, String, Text, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 
 from db.main import Base
@@ -15,9 +15,9 @@ class Message(Base):
     created_at = Column(
         DateTime,
         index=True,
-        server_default=sql.expression.text('NOW()'))
+        default=lambda: datetime.now())
     updated_at = Column(
         DateTime,
         index=True,
-        default=datetime.now,
-        onupdate=datetime.now)
+        default=lambda: datetime.now(),
+        onupdate=lambda: datetime.now())

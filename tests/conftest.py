@@ -28,7 +28,7 @@ def test_app() -> Generator[FastAPI, Any, None]:
 
 
 @pytest.fixture
-def db_session():
+def db_session() -> Generator[Session, Any, None]:
     connection = engine.connect()
     # begin a non-ORM transaction
     transaction = connection.begin()
@@ -62,8 +62,7 @@ class StubMessage:
 
 # API client
 @pytest.fixture()
-def client(test_app: FastAPI, db_session: Session
-           ) -> Generator[TestClient, Any, None]:
+def client(test_app: FastAPI, db_session: Session) -> TestClient:
     def override_get_db():
         try:
             yield db_session
@@ -78,6 +77,6 @@ def client(test_app: FastAPI, db_session: Session
     test_app.dependency_overrides[get_db] = override_get_db
     test_app.dependency_overrides[get_kafka] = override_get_kafka
 
-    with TestClient(test_app) as client:
-        client.producer = producer
-        yield client
+    client = TestClient(test_app)
+    client.producer = producer
+    return client
