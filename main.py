@@ -6,6 +6,9 @@ import msgpack
 from fastapi import FastAPI, Depends
 from kafka import KafkaProducer
 from sqlalchemy.orm import Session
+from starlette import status
+from starlette.requests import Request
+from starlette.responses import Response
 
 from config import get_settings
 from consts import Actions
@@ -38,6 +41,16 @@ def get_kafka():
         **settings.kafka
     )
     return producer
+
+
+@app.middleware("http")
+async def check_security_token(request: Request, call_next):
+    if settings.environment == 'production':
+        auth_token = request.headers.get('Authorization')
+        if auth_token != settings.auth_token or auth_token is None:
+            return Response(status_code=status.HTTP_401_UNAUTHORIZED)
+    response = await call_next(request)
+    return response
 
 
 @app.on_event("shutdown")

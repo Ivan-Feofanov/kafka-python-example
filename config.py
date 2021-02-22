@@ -18,6 +18,8 @@ class AuthEnum(str, Enum):
 
 
 class Settings(BaseSettings):
+    environment: str = 'development'
+    auth_token: str = None
     database_url: PostgresDsn
     kafka_url: str
     kafka_topic: str
