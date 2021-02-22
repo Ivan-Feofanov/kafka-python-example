@@ -8,7 +8,8 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from db.main import Base
-from main import get_db, get_kafka, app
+from main import app
+from router.dependencies import get_db, get_kafka
 from tests.session import engine, Session
 
 
