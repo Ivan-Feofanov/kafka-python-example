@@ -13,6 +13,7 @@ pip install poetry
 git clone https://github.com/Ivan-Feofanov/kafka-python-example.git
 cd kafka-python-example
 poetry install
+poetry shell
 ```
 #### Config
 Befor you start you have to provide some configuration values
@@ -50,12 +51,14 @@ python receiver.py
 ```
 
 #### API doc
-If api service is running on host `127.0.0.1` you can find usefull API documentation
+If api service is running on address `127.0.0.1:8000` you can find usefull API documentation
 on http://127.0.0.1:8000/docs or http://127.0.0.1:8000/redoc
 (thanks to FastAPI)
 
 
 #### Tests and linter
+_Don't forget to set env variable `ENVIRONMENT` to `test`._
+
 To run tests use
 ```shell
 poetry run python -m pytest
