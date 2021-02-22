@@ -1,2 +1,2 @@
-web: uvicorn main:app --host=0.0.0.0 --port=${PORT:-5000}
-receiver: python receiver.py
+web: _bin/run_web.sh
+receiver: _bin/run_receiver.sh
