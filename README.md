@@ -1,7 +1,7 @@
 # Kafka Python example
 ![](https://github.com/Ivan-Feofanov/kafka-python-example/workflows/validate/badge.svg)
 
-Simple example how you can work with Kafka in python
+Simple example how you can interact with Kafka in python
 
 This example written with [poetry](https://python-poetry.org) so you
 have to install it first
@@ -50,7 +50,7 @@ python receiver.py
 ```
 
 #### API doc
-You can find usefull API documentation
+If api service is running on host `127.0.0.1` you can find usefull API documentation
 on http://127.0.0.1:8000/docs or http://127.0.0.1:8000/redoc
 (thanks to FastAPI)
 
