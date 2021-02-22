@@ -40,7 +40,7 @@ jobs:
         run: poetry run prospector
 
       - name: Test
-        run: poetry run python -m pytest
+        run: poetry run python -m pytest --junitxml=junit.xml --cov .
         env:
           ENVIRONMENT: test
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test
