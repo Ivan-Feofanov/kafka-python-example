@@ -4,6 +4,8 @@ from uuid import UUID
 from fastapi import Depends, APIRouter
 from kafka import KafkaProducer
 from sqlalchemy.orm import Session
+from starlette import status
+from starlette.responses import JSONResponse
 
 from config import get_settings
 from consts import Actions
@@ -21,7 +23,8 @@ def create(msg: schemas.IncomingMessage,
     data = msg.dict()
     data['action'] = Actions.CREATE
     producer.send(settings.kafka_topic, data)
-    return msg
+    return JSONResponse(
+        status_code=status.HTTP_201_CREATED, content=msg.json())
 
 
 @api_router.patch("/messages/{message_id}")

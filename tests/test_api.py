@@ -16,7 +16,7 @@ def test_api_post(db_session, client, faker):
         'text': faker.pystr()
     }
     res = client.post('/messages/', json=user_data)
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == status.HTTP_201_CREATED
 
     msg_data = client.producer.call_args['args'][1]
     with mock.patch('receiver.KafkaConsumer',
